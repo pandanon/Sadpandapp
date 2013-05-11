@@ -1,4 +1,3 @@
-sadpandapp
-==========
+# Sadpandapp
 
-Android app for ExHentai
+Android app for ExHentai. Not working for now.
