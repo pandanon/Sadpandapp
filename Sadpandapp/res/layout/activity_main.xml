@@ -4,18 +4,41 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity" >
 
+        <LinearLayout
+        
+        android:id="@+id/linearLayout1"
+         android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btnPrevious"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Previous" />
+
+        <Button
+            android:id="@+id/btnNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next" />
+
+    </LinearLayout>
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerVertical="true" >
-
+        android:layout_height="match_parent"
+        android:layout_above="@+id/linearLayout1" >
     </ListView>
 
-    <TextView android:id="@android:id/empty"
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:text="@string/no_data"/>
-    
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/no_data" />
+
+
+
 </RelativeLayout>

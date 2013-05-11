@@ -7,6 +7,10 @@ import org.apache.http.HttpResponse;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.SearchView;
 import com.sadpandapp.R;
 import com.sadpandapp.task.AsyncTaskCompleteListener;
 import com.sadpandapp.task.DoujinListParser;
@@ -21,15 +25,15 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SearchView;
+import android.widget.Toast;
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends SherlockListActivity {
 
 	private String username;
 	private String password;
@@ -63,6 +67,34 @@ public class MainActivity extends ListActivity {
 			
 		});
 		
+		final Button btnNext = (Button)findViewById(R.id.btnNext);
+		btnNext.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				currentPage++;
+				loadPage();
+				
+			}
+		});
+		
+		final Button btnPrevious = (Button)findViewById(R.id.btnPrevious);
+		if(currentPage == 0)
+			btnPrevious.setClickable(false);
+		btnPrevious.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				if(currentPage != 0) {
+
+					currentPage--;
+					loadPage();
+				}
+				
+			}
+		});
+		
+		
 		HttpClientSingleton.setContext(this.getApplicationContext());
 		loadSharedPreferences();
 
@@ -78,8 +110,10 @@ public class MainActivity extends ListActivity {
 	    Intent intent = getIntent();
 	    //Activity created from search
 	    if (intent != null && Intent.ACTION_SEARCH.equals(intent.getAction())) {
-	    	//Do the Search
 	    	currentSearch = intent.getStringExtra(SearchManager.QUERY);
+	    	currentPage = 0;
+	    	//DEBUG
+//	    	Toast.makeText(this, "Search: "+currentSearch, Toast.LENGTH_LONG).show();
 	    }
 	    else {
 	    	//Load first page
@@ -95,6 +129,7 @@ public class MainActivity extends ListActivity {
 			}
 		}
 		if(!foundCookie) {
+			Toast.makeText(this, "Doing authentication", Toast.LENGTH_LONG).show();
 			//If cookie isn't found, authenticate
 			HTTPEHAuth authTask = new HTTPEHAuth(this, onAuthFinished);
 			authTask.execute(username, password);	
@@ -107,15 +142,17 @@ public class MainActivity extends ListActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		
+		getSupportMenuInflater().inflate(R.menu.main, menu);
+
 		// Get the SearchView and set the searchable configuration
 	    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 	    // Get the SearchView
 	    SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-	    
+
+
 	    searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 	    searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
 	    
 	    //TODO Do something with the search
 		return true;
@@ -195,10 +232,10 @@ public class MainActivity extends ListActivity {
 		String url = EXHENTAI_URL+"?page="+currentPage;
 		
 		if(currentSearch != null) {
-			url += "?search="+"?f_search="+currentSearch;
+			url += "&f_search="+currentSearch;
 		}
-		
-		new DoujinListParser(MainActivity.this, onPageParsed).execute(url);
+		Toast.makeText(this, "URL: "+url, Toast.LENGTH_LONG).show();
+		new DoujinListParser(this, onPageParsed).execute(url);
 	}
 	
 	AsyncTaskCompleteListener<HttpResponse> onAuthFinished = new AsyncTaskCompleteListener<HttpResponse>(){
@@ -216,6 +253,8 @@ public class MainActivity extends ListActivity {
 
 		@Override
 		public void onTaskComplete(List<String> result) {
+//			Toast.makeText(MainActivity.this, "Total results: "+result.size(), Toast.LENGTH_LONG).show();
+
 			JSONGetMetadata task = new JSONGetMetadata(MainActivity.this, onMetaObtained);
 			
 			//FIXME Maybe avoid this type conversion
@@ -229,9 +268,11 @@ public class MainActivity extends ListActivity {
 
 		@Override
 		public void onTaskComplete(List<Gallery> result) {
-			doujinsMeta.addAll(result);
+			doujinMetaAdapter.clear();
+			//doujinsMeta.addAll(result);
 			doujinMetaAdapter.addAll(result);
-			getListView().setAdapter(doujinMetaAdapter);
+//			Toast.makeText(MainActivity.this, "Total results: "+doujinMetaAdapter.getCount(), Toast.LENGTH_LONG).show();
+			//getListView().setAdapter(doujinMetaAdapter);
 			
 		}
 		

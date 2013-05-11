@@ -31,7 +31,6 @@ public class GalleryParser extends AsyncTask<String, Object, String> {
 	
 	@Override
 	protected String doInBackground(String... params) {
-		// TODO Auto-generated method stub
 		String galleryUrl = (String) params[0];
 		
 		Log.i(getClass().toString(), "Connecting to: " + galleryUrl);

@@ -61,9 +61,9 @@ public class DoujinListParser extends AsyncTask<Object, Object, List<String>> {
 				Elements links = doc.select(DOUJINLINK_SELECTOR);
 				List<String> doujins = new ArrayList<String>();
 				for(Element link : links){
-					Log.i(getClass().getName(), "Found doujin: "+link.text());
 					Element urlElement;
-					
+
+
 					//Make sure to ignore download arrow
 					if(link.childNodeSize()== 1){
 						urlElement = link.child(0);
@@ -71,8 +71,17 @@ public class DoujinListParser extends AsyncTask<Object, Object, List<String>> {
 					else{
 						urlElement = link.child(1);
 					}
-					
-					doujins.add(urlElement.attr("href"));
+					String galleryUrl = urlElement.attr("href");
+					if(!galleryUrl.contains("gallerytorrents")) {
+						doujins.add(urlElement.attr("href"));
+						Log.i(getClass().getName(), "Found doujin: "+link.text());
+						Log.i(getClass().getName(), "Doujin URL: "+urlElement.attr("href"));
+						
+					}
+					else {
+						Log.i(getClass().getName(), "Something");
+
+					}
 					
 					//IDEA Use the URL with the JSON API
 				}

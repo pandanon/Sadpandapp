@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.sadpandapp.Gallery;
+import com.sadpandapp.MainActivity;
 import com.sadpandapp.util.HttpClientSingleton;
 import com.sadpandapp.util.Utils;
 
@@ -23,6 +24,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 public class JSONGetMetadata extends AsyncTask<String, Object, List<Gallery>> {
 
@@ -77,26 +79,26 @@ public class JSONGetMetadata extends AsyncTask<String, Object, List<Gallery>> {
                      ArrayList<Gallery> result = new ArrayList<Gallery>();
                      for(int i=0; i<jsonArrayMetadata.length(); i++){
                     	 try{
-                    	 JSONObject row = jsonArrayMetadata.getJSONObject(i);
-                    	 String gid = row.getString("gid");	//Get Gallery Id
-                    	 String name = row.getString("title");
-                    	 String thumb = row.getString("thumb");
-                    	 String token = row.getString("token");
-                    	 int fileNumber = row.getInt("filecount");
-                    	 double rating = row.getInt("rating");
-                    	 Log.i(getClass().getName(), "Title: "+name);
-                    	 //Log.i(getClass().getName(), "Thumb url: "+thumb);
-                    	 List<String> tags = new ArrayList<String>();
-                    	 JSONArray jsonTags = row.getJSONArray("tags");
-                    	 //Log.i(getClass().getName(), "Number of tags: "+jsonTags.length());
-                    	 for(int j=0; j<jsonTags.length(); j++){
-                    		 tags.add(jsonTags.getString(j));
-
-                        	 //Log.i(getClass().getName(), "Tag number "+j+": "+tags.get(j));
-                    	 }
-                    	 
-                    	 //Add Gallery to result list
-                    	 result.add(new Gallery(gid, name, thumb, token, null, fileNumber, rating, tags));
+	                    	 JSONObject row = jsonArrayMetadata.getJSONObject(i);
+	                    	 String gid = row.getString("gid");	//Get Gallery Id
+	                    	 String name = row.getString("title");
+	                    	 String thumb = row.getString("thumb");
+	                    	 String token = row.getString("token");
+	                    	 int fileNumber = row.getInt("filecount");
+	                    	 double rating = row.getInt("rating");
+	                    	 Log.i(getClass().getName(), "Title: "+name);
+	                    	 //Log.i(getClass().getName(), "Thumb url: "+thumb);
+	                    	 List<String> tags = new ArrayList<String>();
+	                    	 JSONArray jsonTags = row.getJSONArray("tags");
+	                    	 //Log.i(getClass().getName(), "Number of tags: "+jsonTags.length());
+	                    	 for(int j=0; j<jsonTags.length(); j++){
+	                    		 tags.add(jsonTags.getString(j));
+	
+	                        	 //Log.i(getClass().getName(), "Tag number "+j+": "+tags.get(j));
+	                    	 }
+	                    	 
+	                    	 //Add Gallery to result list
+	                    	 result.add(new Gallery(gid, name, thumb, token, null, fileNumber, rating, tags));
                     	 }catch(JSONException e){
                     		 Log.i(getClass().getName(), "JSON Reques nº "+i+" failed");
                     		 continue;
@@ -127,7 +129,8 @@ public class JSONGetMetadata extends AsyncTask<String, Object, List<Gallery>> {
 	
 	@Override
 	protected void onPostExecute(List<Gallery> result) {
-		
+		Toast.makeText(ctx, "JSON count: "+result.size(), Toast.LENGTH_LONG).show();
+
 		callback.onTaskComplete(result);
 	}
 	

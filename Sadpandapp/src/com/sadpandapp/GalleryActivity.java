@@ -1,5 +1,7 @@
 package com.sadpandapp;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.MenuItem;
 import com.androidquery.AQuery;
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.androidquery.util.Constants;
@@ -16,7 +18,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.MenuItem;
 import android.widget.Toast;
 import android.support.v4.app.NavUtils;
 
@@ -26,7 +27,7 @@ import android.support.v4.app.NavUtils;
  * 
  * @see SystemUiHider
  */
-public class GalleryActivity extends Activity {
+public class GalleryActivity extends SherlockActivity {
 	/**
 	 * Whether or not the system UI should be auto-hidden after
 	 * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
